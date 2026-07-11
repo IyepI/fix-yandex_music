@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "fixYMusic",
+  "description": "Фиксит яндекс музыку. Восстанавливает доступ к коллекции пользователя. И бонусом блокирует рекламу.",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "js": [
+        "fix.js"
+      ],
+      "matches": [
+        "https://music.yandex.ru/*",
+        "https://music.yandex.by/*",
+        "https://music.yandex.kz/*",
+        "https://music.yandex.uz/*",
+        "https://music.yandex.com/*",
+        "https://music.yandex.ua/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
