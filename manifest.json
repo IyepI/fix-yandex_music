@@ -16,7 +16,8 @@
         "https://music.yandex.com/*",
         "https://music.yandex.ua/*"
       ],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "world": "MAIN"
     }
   ]
 }

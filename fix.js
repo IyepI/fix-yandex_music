@@ -4,35 +4,20 @@ function fixCollectionLink () {
 
     if (link && !link.dataset.fixed) {
         link.setAttribute('href', '/collection');
-
+        
         link.addEventListener('click', e => {
+            e.preventDefault();
             e.stopImmediatePropagation();
             
-            window.location.href = '/collection';
+            window.next.router.push('/collection');
         })
 
         link.dataset.fixed = 'true';
     }
 }
 
-function fixScrollBar () {
-    const collectionPage = document.querySelector('[class*="CollectionPage_root"]');
-    const playlistPage = document.querySelector('[class*="PlaylistPage_wrapper"]');
-
-    if (collectionPage && !collectionPage.dataset?.fixScroll) {
-        onScroll(collectionPage);
-    }
-    if (playlistPage && !playlistPage.dataset?.fixScroll) {
-        onScroll(playlistPage);
-    }
-    
-    if (document.body.dataset.scrollLocked) {
-        document.body.removeAttribute('data-scroll-locked');
-    }
-}
-
 function onScroll (page) {
-    if (page && !page.dataset.fixScroll) {
+    if (page && !page.dataset?.fixScroll) {
         page.addEventListener('wheel', e => {
             e.stopImmediatePropagation();
         }, true);
@@ -41,27 +26,53 @@ function onScroll (page) {
     }
 }
 
-function removeAddBlocks () {
-    const adds = document.querySelectorAll('[data-floating-ui-portal]');
+function fixScrollBar () {
+    const selectors = [
+        '[class*="CollectionPage_root"]',
+        '[class*="PlaylistPage_wrapper"]',
+        '[class*="LandingPage_root"]',
+        '[class*="CollectionPlaylistsPage_root"]',
+    ].join(', ');
 
-    const topAdd = document.querySelector('[class^="TopAdvertBanner_root"]');
-
-    const sideAdd = document.querySelector('[class^="SideAdvertBanner_root"]');
-
-    if (topAdd) {
-        topAdd.remove();
-    } 
+    document.querySelectorAll(selectors)
+        .forEach(collectionPage => onScroll(collectionPage));
     
-    if (sideAdd) {
-        sideAdd.remove();
+    if (document.body.dataset.scrollLocked) {
+        document.body.removeAttribute('data-scroll-locked');
     }
-    
-    adds.forEach(add => {
-        add.remove();
-    })
+}
+
+
+function removeAddBlocks () {
+
+    const addSelectors = [
+        '[class*="TopAdvertBanner_root"]',
+        '[class*="SideAdvertBanner_root"]',
+    ].join(', ');
+
+    const selectorsR = [
+        '[class*="PaywallModal_root"]',
+        '[class*="VideoAd_videoBlock"]',
+    ].join(', ');
+
+    document.querySelectorAll(addSelectors).forEach(add => {
+        if (add) {
+            add.remove();
+        }
+    });
+
+    document.querySelectorAll(selectorsR)
+        .forEach(add => {
+            const parentBlock = add.parentElement ? add.parentElement.closest('[id^="_r_"]') : null;
+            if (parentBlock) {
+                parentBlock.remove();
+            }
+        });
 }
 
 fixCollectionLink();
+removeAddBlocks();
+fixScrollBar();
 
 const observer = new MutationObserver(() => {
     fixCollectionLink();
